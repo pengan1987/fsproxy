@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003 by Radim HSN Kolar (hsn@cybermail.net)
+Copyright (c) 2003-2004 by Radim HSN Kolar (hsn@netmag.cz)
 
 You may copy or modify this file in any manner you wish, provided
 that this notice is always included, and that you hold the author
@@ -11,6 +11,7 @@ use of this software.
 */
 import java.io.*;
 import java.util.StringTokenizer;
+import java.util.Date;
 
 /* stand-alone version of fsp -> http proxy server */
 public class fspproxy
@@ -19,14 +20,34 @@ public class fspproxy
     public static int client_timeout;
     public static boolean trace_url;
     public static String defaultype="application/octet-stream";
-    
+   
+    public static void print_usage()
+    {
+	System.out.println("java fspproxy [port number] [mime types file]");
+	System.exit(1);
+    }
+    	
     public static void main(String argv[])
     {
 	client_timeout=30000;
 	trace_url=true;
 	int port=9090;
 	if(argv.length>0)
-	    port=Integer.valueOf(argv[0]).intValue();
+	{   
+	    try
+	    { 
+	       port=Integer.valueOf(argv[0]).intValue();
+	    }
+	    catch (Exception z)
+	    {
+		print_usage();
+            }
+	    if(argv.length>1)
+	    {
+                System.out.println(new Date()+" Using user defined MIME types table from "+argv[1]);
+                loadMimeTypes(argv[1]);
+	    }
+	}    
 	new fsploop(port,null).run();
     }
 

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003 by Radim HSN Kolar (hsn@cybermail.net)
+Copyright (c) 2003-2004 by Radim HSN Kolar (hsn@netmag.cz)
 
 You may copy or modify this file in any manner you wish, provided
 that this notice is always included, and that you hold the author
@@ -13,7 +13,9 @@ import java.net.*;
 import java.io.*;
 import java.util.StringTokenizer;
 import java.util.Date;
-import net.fsp.*;
+import net.fsp.FSPsession;
+import net.fsp.FSPstat;
+import net.fsp.FSPutil;
 
 public class fspreq implements Runnable
 {
@@ -124,7 +126,7 @@ public class fspreq implements Runnable
 		)
 	  )
 	{
-	    fspproxy.send_error(http10?10:9,400,"This proxy supports only FSP protocol. fsp:// and gopher:// URLs are accepted.",ou);
+	    fspproxy.send_error(http10?10:9,400,"This proxy supports only FSP protocol. Both fsp:// and gopher:// URLs are accepted.",ou);
 	}
 	
 	/* create FSP session to host */

@@ -1,5 +1,7 @@
 			FSPv2 -> HTTP/1.0 protocol proxy
 				Radim Kolar 2003-4
+		      This software is part of FSP project
+			   http://fsp.sourceforge.net
 				
 Copyright:
 You may copy or modify this file in any manner you wish, provided
@@ -11,23 +13,46 @@ Summary:
 This proxy supports HTTP/1.0 on output side and FSP v2 on input side.
 FSP over HTTP/1.0. This proxy do not caches anything.
 
-Installation:
-This programs needs correctly installed (in CLASSPATH) jfsplib,
-you can get it from http://fsp.sourceforge.net/javalib.html
+In detail:
+Using this proxy, you can browse FSP sites by any web browser
+which support gopher protocol. This proxy DO NOT tunels HTTP over
+FSP.
 
+Installation:
+
+1. Get fsp javalib
+
+This programs needs correctly installed (in CLASSPATH) jfsplib,
+you can get it from main FSP protocol suite site:
+http://fsp.sourceforge.net/javalib.html
+
+2. Setup WWW browser's proxy
 Setup Gopher proxy in web browser to port 9090 on host which is running
 fsproxy.
 
+3. Run fsp proxy daemon
+
 Running:
-java fspproxy [portnumber]
+Usage: java fspproxy [portnumber] [mime type table]
+
+FSP proxy can load mime.types style file for mapping file extensions
+to mime types. You can get this file from apache httpd distribution.
+
+Example: java fspproxy 9090 /usr/local/etc/mime.types
 
 Operation:
-Proxy runs on port 9090 and accepts fsp://* and gopher://* URLs on
-input side.
 
-Type in browser ` gopher://your.favourite.fsp.site/ ` and begin...
+FSP Proxy runs on port by default 9090 and accepts fsp://* and gopher://* URLs
+on input side. Most browser do not recognize fsp:// urls, so you have to type
+gopher: instead of fsp:
 
+Simply type in browser ` gopher://your.favourite.fsp.site/ ` and begin...
+
+		 **********************************************
 		     This is a free software.  Be creative. 
 		    Let me know of any bugs and suggestions.
+			   *************************
 
 Radim Kolar
+hsn@users.sourceforge.net
+Main developer of FSP project

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003 by Radim HSN Kolar (hsn@cybermail.net)
+Copyright (c) 2003-2004 by Radim HSN Kolar (hsn@netmag.cz)
 
 You may copy or modify this file in any manner you wish, provided
 that this notice is always included, and that you hold the author
@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class fsploop implements Runnable
 {
-    public static final String  VERSION="0.4";
+    public static final String  VERSION="0.5";
     public static final String  NAME="FSP Proxy";
 
     public static int MAXCLIENTS=15;
