@@ -46,8 +46,8 @@ Sat Oct 30 12:29:23 CEST 2004 FSP Proxy 0.6 ready on 9090/*
 
 Operation:
 
-FSP Proxy runs on port by default 9090 and accepts fsp://*, http://* and
-gopher://* URLs on input side. There requests are transformed info FSP v2
+FSP Proxy runs on port by default 9090 and accepts fsp://*, http://*, ftp://*
+and gopher://* URLs on input side. There requests are transformed info FSP v2
 requests and sent to the target FSP server.  Most browser do not recognize
 fsp:// urls, so you have to type gopher: instead of fsp:
 

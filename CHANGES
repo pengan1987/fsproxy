@@ -1,3 +1,12 @@
+0.7
+        Added tagline to generated error messages
+	Nice directory listings
+	FSP timeout increased from 30 to 120 sec.
+	bittorent mime type added
+	ftp:// url is accepted also
+	send 502 not 401 on failed directory listing because we
+	  do not supports FSP passwords.
+
 0.6
         Added link to FSP homepage into directory listings tagline
 	Directory listings are now very fast. There are just
