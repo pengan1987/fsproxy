@@ -1,7 +1,7 @@
 #makefile for FSP proxy server
 SOURCES=*.java
 DOC=README TODO CHANGES
-VERSION=05
+VERSION=06
 
 default: build
 build:

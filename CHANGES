@@ -1,3 +1,15 @@
+0.6
+        Added link to FSP homepage into directory listings tagline
+	Directory listings are now very fast. There are just
+	  1 RTT far away!
+	Added help wanted note to every directory listings.
+	You need to get 1.0rc5 Java FSP support library
+	Added HTTP/1.1 protocol support!
+	HTTP/1.1 Range requests are supported!
+	Download managers in browsers now works very nicely with
+	  all that resuming stuff.
+	Added note about help wanted with adding FSP to lftp,mozilla,wget..
+
 0.5
 	updated copyrights
 	print usage on error

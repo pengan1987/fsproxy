@@ -23,6 +23,9 @@ public class fspreq implements Runnable
     private boolean http10;
     private DataInputStream in;
     private DataOutputStream ou;
+    private long rangestart=0;     /* where to start download */
+    private long rangelength=-1;   /* how many bytes to download */
+    private long rangefilesize=-1; /* expected filesize */
    
     fspreq(Socket ns)
     {
@@ -54,7 +57,6 @@ public class fspreq implements Runnable
             System.out.println("[FSPPROXY TRACE "+Thread.currentThread().getName()+"] > "+req);
         }
 
-	StringTokenizer st=new StringTokenizer(req);
         int req_method;
 	long ims=0;
 	req_method=req.indexOf(" HTTP/1.",0);
@@ -86,6 +88,69 @@ public class fspreq implements Runnable
 	        catch (IllegalArgumentException baddate)                                        {}
 		continue;
 	      }
+              if(s1.equals("range"))
+	      {
+                  /* Range: bytes = 2 - 5 / 23 */
+		  try
+		  {
+		      String r;
+		      long l;
+		      int i;
+		      byte state;
+		      s2=s2.toLowerCase();
+		      i=s2.indexOf("bytes");
+		      if(i==-1)
+			  throw new Exception();
+		      for(i=i+5;;i++)
+			  if ( s2.charAt(i)=='=')
+			  {
+			      s2=s2.substring(i+1).trim();
+			      break;
+			  }
+
+		      //System.out.println("parse start "+s2);
+		      if(s2.charAt(0)=='-') 
+	              {
+			  rangestart = -1;
+			  state = 1;
+		      }
+		      else
+			  state = 0;	  
+		      StringTokenizer st=new StringTokenizer(s2," \t\r\n-/");
+		      while(st.hasMoreTokens())
+		      {
+		          r=st.nextToken();
+		          //System.out.println("r2 "+r);
+                          l=Long.valueOf(r).longValue();
+			  switch(state)
+			  {
+			       case 0:
+			           rangestart=l;
+			           break;
+			       case 1:
+			           if ( rangestart == -1 )
+				       rangelength = l;
+				   else    
+			               rangelength=l-rangestart+1;
+			           break;
+			       case 2:
+			           rangefilesize=l;
+				   break;
+			       default:
+			           throw new Exception();
+			   }
+			   state++;
+		      }
+                  }
+		  catch (Exception e)
+		  {
+		    rangestart=0;
+		    rangelength=-1;
+		    rangefilesize=-1;
+	     	    // fspproxy.send_error(http10?10:9,416,"Unable to parse Range header in request.",ou);
+		  }
+	      }
+
           }
 	String req2=null;
 
@@ -122,11 +187,12 @@ public class fspreq implements Runnable
 	String parsed[]=fspproxy.parseURL(req2,null);
 	if(parsed[4]==null || 
 		(!parsed[4].equalsIgnoreCase("fsp") && 
-		 !parsed[4].equalsIgnoreCase("gopher") 
+		 !parsed[4].equalsIgnoreCase("gopher") &&
+		 !parsed[4].equalsIgnoreCase("http")
 		)
 	  )
 	{
-	    fspproxy.send_error(http10?10:9,400,"This proxy supports only FSP protocol. Both fsp:// and gopher:// URLs are accepted.",ou);
+	    fspproxy.send_error(http10?10:9,501,"This proxy speaks only FSP v2 protocol. A fsp://, gopher:// and http:// URLs are handled accepted.",ou);
 	}
 	
 	/* create FSP session to host */
@@ -142,15 +208,32 @@ public class fspreq implements Runnable
 	    fspproxy.send_error(http10?10:9,500,"Can not open session to FSP site "+parsed[0]+":"+parsed[1]+" Reason: "+en,ou);
 	    return;
 	}
-	/* stat the URL */
-	try
+
+        /*
+	System.out.println("p2="+parsed[2]);
+	System.out.println("p3="+parsed[3]);
+	*/
+
+	/* try to avoid stat */
+	if(parsed[2].endsWith("/") && parsed[3].length()==0)
 	{
-	    stat=FSPutil.stat(ses,parsed[2]+parsed[3]);
+	    /* fake stat info */
+	    stat=new FSPstat();
+	    stat.name=parsed[2];
+	    stat.type=FSPstat.RDTYPE_DIR;
 	}
-	catch (IOException io)
-	{
-	    fspproxy.send_error(http10?10:9,500,"Error getting file info. Reason: "+io,ou);
-	    return;
+	else
+	{        
+	    /* stat the URL */
+	    try
+	    {
+		stat=FSPutil.stat(ses,parsed[2]+parsed[3]);
+	    }
+	    catch (IOException io)
+	    {
+		fspproxy.send_error(http10?10:9,500,"Error getting file info. Reason: "+io,ou);
+		return;
+	    }
 	}
 
 	if(stat==null)
@@ -176,22 +259,18 @@ public class fspreq implements Runnable
 		ou.close();
 		return;
 	    }
-		
+
 	    /* generate a directory listing */
 	    FSPstat list[];
 
 	    list=FSPutil.statlist(ses,stat.name);
 	    if(list==null)
 	    {
-	       fspproxy.send_error(http10?10:9,401,"Can't list directory",ou);
+	       fspproxy.send_error(http10?10:9,401,"Can't get directory listing of "+stat.name,ou);
 	    }
 	    
-	    ou.writeBytes("HTTP/1.0 200 Listing\r\nServer: "+fsploop.NAME+" "+fsploop.VERSION+"\r\nContent-Type: text/html\r\n\r\n");
+	    ou.writeBytes("HTTP/1.1 200 Listing\r\nServer: "+fsploop.NAME+" "+fsploop.VERSION+"\r\nContent-Type: text/html\r\nConnection: Close\r\nAccept-Ranges: bytes\r\n\r\n");
 	    ou.writeBytes("<h2>Directory "+stat.name+"</h2>\n<pre>\n");
-	    /*
-	    if(stat.name.endsWith("/"))
-		stat.name=stat.name.substring(0,stat.name.length()-1);
-		*/
 	    for(int i=0;i<list.length;i++)
 	    {
 		if(list[i].name.equals(".")) continue;
@@ -212,14 +291,35 @@ public class fspreq implements Runnable
 		ou.writeBytes("<a href=\""+list[i].name+"\">"+list[i].name+"</a>\n");
 	    }
 	    ou.writeBytes("</pre>\n");
-	    ou.writeBytes("Listing generated by "+fsploop.NAME+" "+fsploop.VERSION+".\n");
+	    ou.writeBytes("Listing generated by <a href=\"http://fsp.sourceforge.net/fsproxy.html\">"+fsploop.NAME+" "+fsploop.VERSION+"</a>.\n<p>Please contact FSP project if you can/want help with development of nice looking directory listings. Webdesigner needed. You see...\n<p>And anybody wants to write FSP support for lftp, mozilla, wget?\n");
 	    ou.close();
 	    return;
 	}
 
 	/* transfer file */
-	ou.writeBytes("HTTP/1.0 200 Transfering\r\nServer: "+fsploop.NAME+" "+fsploop.VERSION+"\r\nContent-Type: "+fspproxy.guessContentType(stat.name)+"\r\nContent-length: "+stat.length+"\r\nLast-Modified: "+new Date(stat.lastmod).toGMTString()+"\r\n\r\n");
-	FSPutil.download(ses,stat.name,ou,0);
+
+	/* do we want range transfer? */
+	if(rangestart>0 || rangelength > -1)
+	{
+	    /* yes, check user suplied valuez */
+	    if ( rangestart == -1 )
+		rangestart = stat.length - rangelength;
+	    if (rangelength == -1 )
+		rangelength = stat.length - rangestart;
+	    if (
+		rangestart + rangelength > stat.length ||
+		(rangefilesize != stat.length && rangefilesize>=0 )
+	       )
+	     	    fspproxy.send_error(http10?10:9,416,"Specified Range is incorrect for this file.",ou);
+            /* Do partial file transfer */
+	    ou.writeBytes("HTTP/1.1 206 Partial\r\nServer: "+fsploop.NAME+" "+fsploop.VERSION+"\r\nAccept-Ranges: bytes\r\nContent-Type: "+fspproxy.guessContentType(stat.name)+"\r\nContent-length: "+rangelength+"\r\nContent-Range: bytes "+rangestart+"-"+(rangestart+rangelength-1)+"/"+stat.length+"\r\nConnection: Close\r\nLast-Modified: "+new Date(stat.lastmod).toGMTString()+"\r\n\r\n");
+	    FSPutil.download(ses,stat.name,ou,rangestart,rangelength);
+	    ou.close();
+	    return;
+	}
+	    	
+	ou.writeBytes("HTTP/1.1 200 Transfering\r\nConnection: Close\r\nServer: "+fsploop.NAME+" "+fsploop.VERSION+"\r\nAccept-Ranges: bytes\r\nContent-Type: "+fspproxy.guessContentType(stat.name)+"\r\nContent-length: "+stat.length+"\r\nLast-Modified: "+new Date(stat.lastmod).toGMTString()+"\r\n\r\n");
+	FSPutil.download(ses,stat.name,ou,0,-1);
 	ou.close();
 	return;
     }
@@ -228,7 +328,7 @@ public class fspreq implements Runnable
 	try
 	{
 	    // linger close
-	    System.out.println(err);
+	    //System.out.println(err);
 	    s.setSoLinger(true,0);
 	    s.close();
 	}

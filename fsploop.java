@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class fsploop implements Runnable
 {
-    public static final String  VERSION="0.5";
+    public static final String  VERSION="0.6";
     public static final String  NAME="FSP Proxy";
 
     public static int MAXCLIENTS=15;
