@@ -1,6 +1,19 @@
+/*
+Copyright (c) 2003 by Radim HSN Kolar (hsn@cybermail.net)
+
+You may copy or modify this file in any manner you wish, provided
+that this notice is always included, and that you hold the author
+harmless for any loss or damage resulting from the installation or
+use of this software.
+
+		     This is a free software.  Be creative. 
+		    Let me know of any bugs and suggestions.
+*/
 import java.net.*;
 import java.io.*;
 import java.util.StringTokenizer;
+import java.util.Date;
+import net.fsp.*;
 
 public class fspreq implements Runnable
 {
@@ -41,6 +54,7 @@ public class fspreq implements Runnable
 
 	StringTokenizer st=new StringTokenizer(req);
         int req_method;
+	long ims=0;
 	req_method=req.indexOf(" HTTP/1.",0);
 	if (req_method==-1) http10=false;
 	else
@@ -57,12 +71,25 @@ public class fspreq implements Runnable
 	      if(j==-1) continue;
 	      s1=line.substring(0,j).toLowerCase();
 	      s2=line.substring(j+1);
+
+              if(s1.equals("if-modified-since")) 
+	      {
+                /* cut of file size */
+               	j=s2.indexOf(';',0);
+		if(j>-1) s2=s2.substring(0,j);
+		try
+		{
+		   ims=new Date(s2).getTime();
+	        }
+	        catch (IllegalArgumentException baddate)                                        {}
+		continue;
+	      }
           }
 	String req2=null;
 
 	if(!req.startsWith("GET ")) 
 	{
-	     fspproxy.send_error(http10?10:9,501,"Only GET access method is possible for UI",ou);
+	     fspproxy.send_error(http10?10:9,501,"This FSP proxy server supports only GET access method.",ou);
 	}
 	/* access check 
 	if(!mgr.checkInetAdr(s.getInetAddress().getAddress())) {
@@ -88,11 +115,102 @@ public class fspreq implements Runnable
 	{
 	    fspproxy.send_error(http10?10:9,400,"Only proxy requests are supported.",ou);
 	}
-	/* process request */
-        // send_reply(ui.process(req2));
+	
+	/* parse request */
+	String parsed[]=fspproxy.parseURL(req2,null);
+	if(parsed[4]==null || 
+		(!parsed[4].equalsIgnoreCase("fsp") && 
+		 !parsed[4].equalsIgnoreCase("gopher") 
+		)
+	  )
+	{
+	    fspproxy.send_error(http10?10:9,400,"This proxy supports only FSP protocol.",ou);
+	}
+	
+	/* create FSP session to host */
+	FSPsession ses;
+	if(parsed[1]==null) parsed[1]="0";
+	try
+	{
+	    ses=new FSPsession(parsed[0],Integer.valueOf(parsed[1]).intValue());
+	}
+	catch (Exception en)
+	{
+	    fspproxy.send_error(http10?10:9,500,"Can not open session to FSP site "+parsed[0]+":"+parsed[1]+" Reason: "+en,ou);
+	    return;
+	}
+	/* stat the URL */
+	FSPstat stat;
+	try
+	{
+	    stat=FSPutil.stat(ses,parsed[2]+parsed[3]);
+	}
+	catch (IOException io)
+	{
+	    fspproxy.send_error(http10?10:9,500,"Error getting file info. Reason: "+io,ou);
+	    return;
+	}
+
+	if(stat==null)
+	{
+	    /* file not found! */
+	    fspproxy.send_error(http10?10:9,404,"File not found",ou);
+	}
+	/* Check IMS */
+	if(ims>0 && stat.lastmod<=ims)
+	{
+	    /* not modified! */
+	    ou.writeBytes("HTTP/1.0 304 YahOO\r\nServer: "+fsploop.NAME+" "+fsploop.VERSION+"\r\n\r\n");
+	    ou.close();
+	    return;
+	}
+	/* handle file request */
+	if(stat.type==FSPstat.RDTYPE_DIR)
+	{
+	    /* generate a directory listing */
+	    FSPstat list[];
+
+	    list=FSPutil.statlist(ses,stat.name);
+	    if(list==null)
+	    {
+	       fspproxy.send_error(http10?10:9,401,"Can't list directory",ou);
+	    }
+	    
+	    ou.writeBytes("HTTP/1.0 200 Listing\r\nServer: "+fsploop.NAME+" "+fsploop.VERSION+"\r\nContent-Type: text/html\r\n\r\n");
+	    ou.writeBytes("<h2>Directory "+stat.name+"</h2>\n<pre>\n");
+	    if(stat.name.endsWith("/"))
+		stat.name=stat.name.substring(0,stat.name.length()-1);
+	    for(int i=0;i<list.length;i++)
+	    {
+		if(list[i].name.equals(".")) continue;
+		if(list[i].type==FSPstat.RDTYPE_DIR)
+		{
+		    ou.writeBytes("[directory] ");
+		} else
+		    ou.writeBytes("[file] ");
+		ou.writeBytes("<a href=\""+stat.name+"/"+list[i].name+"\">"+list[i].name+"</a>\n");
+	    }
+	    ou.writeBytes("</pre>\n");
+	    ou.close();
+	    return;
+	}
+
+	/* transfer file */
+	ou.writeBytes("HTTP/1.0 200 Transfering\r\nServer: "+fsploop.NAME+" "+fsploop.VERSION+"\r\nContent-Type: application/octet-stream\r\nContent-length: "+stat.length+"\r\n\r\n");
+	FSPutil.download(ses,stat.name,ou,0);
+	ou.close();
+	return;
     }
     catch (IOException err)
     {
+	try
+	{
+	    // linger close
+	    System.out.println(err);
+	    s.setSoLinger(true,0);
+	    s.close();
+	}
+	catch (IOException ignore) {}
     }
 }
 

@@ -1,2 +1,33 @@
-			   FSP -> HTTP protocol proxy
+			FSPv2 -> HTTP/1.0 protocol proxy
 				Radim Kolar 2003
+				
+Copyright:
+You may copy or modify this file in any manner you wish, provided
+that this notice is always included, and that you hold the author
+harmless for any loss or damage resulting from the installation or
+use of this software.
+
+Summary:
+This proxy supports HTTP/1.0 on output side and FSP v2 on input side.
+FSP over HTTP/1.0. This proxy do not caches anything.
+
+Installation:
+This programs needs correctly installed (in CLASSPATH) jfsplib,
+you can get it from http://fsp.sourceforge.net/javalib.html
+
+Setup Gopher proxy in web browser to port 9090 on host which is running
+fsproxy.
+
+Running:
+java fspproxy [portnumber]
+
+Operation:
+Proxy runs on port 9090 and accepts fsp://* and gopher://* URLs on
+input side.
+
+Type in browser ` gopher://your.favourite.fsp.site/ ` and begin...
+
+		     This is a free software.  Be creative. 
+		    Let me know of any bugs and suggestions.
+
+Radim Kolar

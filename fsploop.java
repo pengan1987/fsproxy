@@ -1,10 +1,21 @@
+/*
+Copyright (c) 2003 by Radim HSN Kolar (hsn@cybermail.net)
+
+You may copy or modify this file in any manner you wish, provided
+that this notice is always included, and that you hold the author
+harmless for any loss or damage resulting from the installation or
+use of this software.
+
+		     This is a free software.  Be creative. 
+		    Let me know of any bugs and suggestions.
+*/
 import java.net.*;
 import java.io.IOException;
 import java.util.Date;
 
 public class fsploop implements Runnable
 {
-    public static final String  VERSION="0.1";
+    public static final String  VERSION="0.3";
     public static final String  NAME="FSP Proxy";
 
     public static int MAXCLIENTS=15;
