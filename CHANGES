@@ -1,9 +1,9 @@
 0.7
+	Nice directory listings with file size and last modification time!
         Added tagline to generated error messages
-	Nice directory listings
-	FSP timeout increased from 30 to 120 sec.
+	FSP timeout increased from 30 to 500 sec.
 	bittorent mime type added
-	ftp:// url is accepted also
+	ftp:// url is accepted as alias
 	send 502 not 401 on failed directory listing because we
 	  do not supports FSP passwords.
 

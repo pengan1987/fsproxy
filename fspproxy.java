@@ -29,7 +29,7 @@ public class fspproxy
     	
     public static void main(String argv[])
     {
-	client_timeout=120000;
+	client_timeout=500000;
 	trace_url=true;
 	int port=9090;
 	if(argv.length>0)
