@@ -10,6 +10,7 @@ use of this software.
 		    Let me know of any bugs and suggestions.
 */
 import java.io.*;
+import java.util.StringTokenizer;
 
 /* stand-alone version of fsp -> http proxy server */
 public class fspproxy
@@ -17,6 +18,7 @@ public class fspproxy
 
     public static int client_timeout;
     public static boolean trace_url;
+    public static String defaultype="application/octet-stream";
     
     public static void main(String argv[])
     {
@@ -60,7 +62,7 @@ public class fspproxy
     4 - protocol (null if http)
     */
 
-    /* code from Smart Cache */
+    /* code from Smart Cache mgr.java */
     final public static String[] parseURL(String url,String proto)
     {
       String[] res=new String[5];
@@ -149,4 +151,270 @@ public class fspproxy
       return res;
     }
 
+ public final static void loadMimeTypes(String fname)
+ {
+  if(fname==null) return;
+  File f=new File(fname);
+  if(!f.isFile())
+  {
+      System.err.println("[ERROR] Can't load mime.types from file '"+fname+"'");
+      return;
+  }
+  try
+  {
+    BufferedReader in=new BufferedReader(new LineNumberReader(new FileReader(fname)));
+    String line;
+    StringTokenizer st;
+    String mimetype,ext;
+    // init GT
+    guesstable=new String[0];
+    while(true)
+    {
+	    ext=mimetype=null;
+	    line=in.readLine();
+	    if(line==null) break;
+	    st=new StringTokenizer(line);
+	    if(!st.hasMoreTokens()) continue;
+	    mimetype=st.nextToken();
+	    if(mimetype.startsWith("#")) continue;
+	    while(true)
+	    {
+		
+	    	if(!st.hasMoreTokens()) break;
+	    	ext=st.nextToken();
+		updateGuessTable(mimetype,ext);
+	    }
+    }
+    in.close();
+  }
+  catch (IOException grrrrrrrrrrrrr)
+   {
+    System.err.println("[ERROR] Reading mime.types from "+fname);
+   }
+ }
+
+ public final static String guessContentType(String fname)
+ {
+  fname=fname.toLowerCase();
+  for(int i=0;i<guesstable.length;i+=2)
+   {
+    if(fname.endsWith(guesstable[i])) return guesstable[i+1];
+   }
+  // System.out.println("[WARNING] Can not determine MIME type for "+fname+", defaulting to "+defaultype);
+  return defaultype;
+ }
+
+ /* pozdejsi koncovka prepise predchozi hodnotu */
+ private final static void updateGuessTable(String mimetype,String ext)
+ {
+ 	 if(mimetype==null || ext==null) return;
+	 if(mimetype.length()==0 || ext.length()==0) return;
+	 ext=("."+ext).toLowerCase();
+	 for(int i=0;i<guesstable.length;i+=2)
+	 {
+		 if(ext.equals(guesstable[i]))
+		   {
+		     guesstable[i+1]=mimetype;
+		     return;
+		   }
+	 }
+	 String tmp[];
+	 tmp=new String[guesstable.length+2];
+	 System.arraycopy(guesstable,0,tmp,0,guesstable.length);
+	 tmp[guesstable.length]=ext;
+	 tmp[guesstable.length+1]=mimetype;
+	 guesstable=tmp;
+}
+
+ static String guesstable[]=
+           {
+             // java stuff
+             // ".java","application/java",
+             ".java","text/plain",
+             ".class","application/java-vm",
+             ".jar","application/java-archive",
+	
+	     // images
+             ".gif","image/gif",
+	     ".ief","image/ief",
+	     ".tiff","image/tiff",
+	     ".tif","image/tiff",
+             ".jpeg","image/jpeg",
+             ".jpe","image/jpeg",
+             ".jpg","image/jpeg",
+	     ".png","image/png",
+	     ".ras","image/x-cmu-raster",
+	     ".bmp","image/x-ms-bmp",
+	     ".pnm","image/x-portable-anymap",
+	     ".pbm","image/x-portable-bitmap",
+	     ".pgm","image/x-portable-graymap",
+	     ".ppm","image/x-portable-pixmap",
+	     ".rgb","image/x-rgb",
+	     ".xbm","image/x-xbitmap",
+	     ".xpm","image/x-xpixmap",
+	     ".xwd","image/x-xwindowdump",
+	
+	     // plain text
+             ".txt","text/plain",
+             ".text","text/plain",
+             ".doc","text/plain",
+             ".log","text/plain",
+	     ".csv","text/comma-separated-values",
+	     ".tsv","text/tab-separated-values",
+
+	     // hypertext
+             "welcome",  "text/html", // cache-generated index
+	     ".css","text/css",
+	     ".js","text/javascript",
+	     ".pl",  "text/html",
+	     ".cgi",  "text/html",
+	     ".asp",  "text/html",
+	     ".jsp",  "text/html",
+             ".htm",  "text/html",
+             ".html",  "text/html",
+	     ".shtml", "text/html",
+             ".htmli",  "text/html",
+             ".dchtml",  "text/html",
+	     ".pht",   "text/html",
+	     ".phtml", "text/html",
+	     ".php",   "text/html",
+	     ".php3",  "text/html",
+	     ".php4",  "text/html",
+	     ".php3p", "text/html",
+	     ".php4p", "text/html",
+	
+	     ".texi","application/x-texinfo",
+	     ".texinfo","application/x-texinfo",
+
+	     // VRML
+	     ".vrm","x-world/x-vrml",
+	     ".vrml","x-world/x-vrml",
+	     ".wrl" ,"x-world/x-vrml",
+	
+	     // formated text
+	     ".rtx","text/richtext",
+             ".pdf","application/pdf",
+	     ".rtf","application/rtf",
+	     ".ai","application/postscript",
+	     ".ps","application/postscript",
+	     ".eps","application/postscript",
+	     ".wp5","application/wordperfect5.1",
+	     ".wk","application/x-123",
+	     ".dvi","application/x-dvi",
+	     ".frm","application/x-maker",
+	     ".maker","application/x-maker",
+	     ".frame","application/x-maker",
+	     ".fm"   ,"application/x-maker",
+	     ".fb"   ,"application/x-maker",
+	     ".book", "application/x-maker",
+	     ".fbdoc","application/x-maker",
+
+	     // fonts
+	     ".pfa","application/x-font",
+	     ".pfb","application/x-font",
+	     ".gsf","application/x-font",
+	     ".pcf","application/x-font",
+	     ".pcf.z","application/x-font",
+	     ".gf","application/x-tex-gf",
+	     ".pk","application/x-tex-pk",
+
+	     // archives
+             ".zip","application/zip",
+             ".tar","application/x-tar",
+	     ".hqx","application/mac-binhex40",
+	     ".bcpio","application/x-bcpio",
+	     ".cpio","application/x-cpio",
+	     ".deb","application/x-debian-package",
+             ".gtar","application/x-gtar",
+	     ".tgz" ,"application/x-gtar",
+	     ".tar.gz","application/x-gtar",
+	     ".shar","application/x-shar",
+	     ".sit","application/x-stuffit",
+	     ".sv4cpio","application/x-sv4cpio",
+	     ".sv4crc","application/x-sv4crc",
+	
+	     //audio
+	     ".au","audio/basic",
+	     ".snd","audio/basic",
+             ".mid","audio/midi",
+             ".midi","audio/midi",
+             ".mp2","audio/mpeg",
+             ".mpega","audio/mpeg",
+             ".mpga","audio/mpeg",
+             ".mp3","audio/mpeg",
+	     ".m3u","audio/mpegurl",
+             ".aif","audio/x-aiff",
+             ".aiff","audio/x-aiff",
+             ".aifc","audio/x-aiff",
+	     ".wav","audio/x-wav",
+	     ".ra" ,"audio/x-pn-realaudio",
+	     ".rm" ,"audio/x-pn-realaudio",
+	     ".ram","audio/x-pn-realaudio",
+
+	     //video
+	     ".mpeg","video/mpeg",
+	     ".mpg","video/mpeg",
+             ".mpe","video/mpeg",
+             ".qt","video/quicktime",
+             ".mov","video/quicktime",
+             ".avi","video/x-msvideo",
+             ".movie","video/x-sgi-movie",
+	     ".dl","video/dl",
+	     ".fli","video/fli",
+	     ".gl","video/gl",
+	     ".asf","video/x-ms-asf",
+	     ".asx","video/x-ms-asf",
+
+	     //sources
+	     ".tex","text/x-tex",
+	     ".c","text/plain",
+	     ".h","text/plain",
+	     ".ltx","text/x-tex",
+	     ".sty","text/x-tex",
+	     ".cls","text/x-tex",
+	     ".latex","application/x-latex",
+	     ".oda","application/oda",
+	     ".t"  ,"application/x-troff",
+	     ".tr" ,"application/x-troff",
+	     ".roff","application/x-troff",
+	     ".man", "application/x-troff-man",
+	     ".me",  "application/x-troff-me",
+	     ".ms",  "application/x-troff-ms",
+	     ".vcs", "text/x-vCalendar",
+	     ".vcf", "text/x-vCard",
+
+	     // misc apps
+	     ".csm","application/cu-seeme",
+	     ".cu", "application/cu-seeme",
+	     ".tsp","application/dsptype",
+	     ".spl","application/futuresplash",
+	     ".pgp","application/pgp-signature",
+             ".wz", "application/x-Wingz",
+	     ".dcr","application/x-director",
+	     ".dir","application/x-director",
+	     ".dxr","application/x-director",
+             ".hdf","application/x-hdf",
+             ".mif","application/x-mif",
+	     ".nc" ,"application/x-netcdf",
+	     ".cdf","application/x-netcdf",
+	     ".pac","application/x-ns-proxy-autoconfig",
+	     ".swf","application/x-shockwave-flash",
+	     ".swfl","application/x-shockwave-flash",	
+	     ".ustar","application/x-ustar",
+	     ".src","application/x-wais-source",
+
+	     // msdos
+	     ".com","application/x-msdos-program",
+	     ".exe","application/x-msdos-program",
+	     ".bat","application/x-msdos-program",
+
+	     //microsoft apps
+	     ".xls","application/excel",
+	     ".dot","application/msword",
+             ".ppt","application/powerpoint",
+	
+	     //binary files
+	     ".bin","application/octet-stream",
+
+           };
 }
