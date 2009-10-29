@@ -1,3 +1,4 @@
+0.8
     Source files moved to src/ subdirectory
     Maven 2.2 build system added
     GNU makefile and SCons build systems removed

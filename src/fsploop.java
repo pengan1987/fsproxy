@@ -6,7 +6,7 @@ that this notice is always included, and that you hold the author
 harmless for any loss or damage resulting from the installation or
 use of this software.
 
-		     This is a free software.  Be creative. 
+		     This is a free software.  Be creative.
 		    Let me know of any bugs and suggestions.
 */
 import java.net.*;
@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class fsploop implements Runnable
 {
-    public static final String  VERSION="0.7";
+    public static final String  VERSION="0.8";
     public static final String  NAME="FSP Proxy";
 
     public static int MAXCLIENTS=15;
@@ -25,7 +25,7 @@ public class fsploop implements Runnable
     public InetAddress serveradr;
 
     private ServerSocket server;
-   
+
     fsploop(int port, InetAddress adr)
     {
 	serverport=port;
@@ -37,7 +37,7 @@ public class fsploop implements Runnable
 	    try {
 		 server=new ServerSocket(serverport,10,serveradr);
 	    }
-	    catch(IOException e) 
+	    catch(IOException e)
 	    {
 		  System.err.println("[FSPPROXY] ERROR: Cannot bind to port "+serverport+"/"+serveradr.getHostAddress()+"  Reason: "+e);
 		  return;
@@ -46,7 +46,7 @@ public class fsploop implements Runnable
 	     try{
 		     server=new ServerSocket(serverport);
 		 }
-	     catch(IOException e) 
+	     catch(IOException e)
 	     {
 		       System.err.println("[FSPPROXY] ERROR: Cannot bind to my port "+serverport+"/*  Reason: "+e);
 		       return;
@@ -63,21 +63,21 @@ public class fsploop implements Runnable
 
       clients=new ThreadGroup("FSPPROXY-http-clients");
       System.out.println(new Date()+" "+NAME+" "+VERSION+" ready on "+serverport+"/"+(serveradr==null?"*":serveradr.getHostAddress()));
-       while (true) 
+       while (true)
        {
 		clientSocket = null;
 		client=null;
-		try 
+		try
 		{
 		    clientSocket = server.accept();
-		} 
-		catch (IOException e) 
+		}
+		catch (IOException e)
 		{
 		    System.err.println("Warning: Accept failed: "+e);
 		    continue;
 		}
 		if(clients.activeCount()>MAXCLIENTS)
-		  try 
+		  try
 		  {
 		      System.err.println(new Date()+" [FSPPROXY] Warning: Active connections limit ("+MAXCLIENTS+") reached, HTTP request rejected.");
 		      clientSocket.setSoLinger(true,0);
