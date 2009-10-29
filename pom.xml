@@ -72,34 +72,6 @@
       	</executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.6.1</version>
-        <executions>
-           <execution>
-               <phase>compile</phase>
-               <id>gen-javadoc-in-build-phase</id>
-               <goals>
-                   <goal>javadoc</goal>
-               </goals>
-           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-           <filesets>
-             <fileset>
-               <directory>javadoc</directory>
-               <includes>
-                  <include>**</include>
-               </includes>
-             </fileset>
-           </filesets>
-        </configuration>
-      </plugin>
-      <plugin>
       	<groupId>org.apache.maven.plugins</groupId>
       	<artifactId>maven-source-plugin</artifactId>
       	<version>2.1.1</version>
@@ -142,18 +114,6 @@
   		<version>1.0rc8</version>
   	</dependency>
   </dependencies>
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <reportOutputDirectory>${basedir}/javadoc</reportOutputDirectory>
-          <destDir>/</destDir>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
   <distributionManagement>
     <repository>
       <id>fsp-releases</id>
