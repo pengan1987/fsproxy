@@ -2,3 +2,7 @@
 *.zip
 .sconsign*
 
+.settings
+bin
+javadoc
+target
