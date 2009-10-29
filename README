@@ -26,6 +26,7 @@ Installation:
 This program needs correctly installed (in CLASSPATH) jfsplib,
 you can get it from main FSP protocol suite site:
 http://fsp.sourceforge.net/javalib.html
+You need at least 1.0rc7 version of jfsplib
 
 2. Setup WWW browser's proxy
 Setup Gopher proxy in web browser to port 9090 on host which is running

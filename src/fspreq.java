@@ -269,12 +269,13 @@ public class fspreq implements Runnable
 	    }
 
 	    /* generate a directory listing */
-	    FSPstat list[];
+	    FSPstat list[]=null;
 
-	    list=FSPutil.statlist(ses,stat.name);
-	    if(list==null)
-	    {
-	       fspproxy.send_error(http10?10:9,502,"Can't get directory listing of "+stat.name,ou);
+	    try {
+		    list=FSPutil.statlist(ses,stat.name);
+	    }
+	    catch (IOException e) {
+		       fspproxy.send_error(http10?10:9,502,"Can't get directory listing of "+stat.name,ou);
 	    }
 
 	    ou.writeBytes("HTTP/1.1 200 Listing\r\nServer: "+fsploop.NAME+" "+fsploop.VERSION+"\r\nContent-Type: text/html\r\nConnection: Close\r\nAccept-Ranges: bytes\r\n\r\n");
