@@ -1,8 +1,8 @@
-			FSPv2 -> HTTP/1.1 protocol proxy
-				  Radim Kolar 
-				     2003-4
-		    http://fsp.sourceforge.net/fsproxy.html
-		      This software is part of FSP project
+           FSPv2 -> HTTP/1.1 protocol proxy
+                     Radim Kolar
+                       2003-9
+        http://fsp.sourceforge.net/fsproxy.html
+          This software is part of FSP project
 
 Copyright:
 You may copy or modify this file in any manner you wish, provided
@@ -16,8 +16,8 @@ FSP v2 over HTTP/1.1. This proxy do not caches anything.
 
 In detail:
 Using this proxy, you can browse FSP sites by any web browser
-which support gopher protocol. 
-This proxy DO NOT tunels HTTP over FSP. This is an different project.
+which support gopher protocol.
+This proxy DOES NOT tunnels HTTP over FSP. This is a different project.
 
 Installation:
 
@@ -34,7 +34,7 @@ fsproxy.
 3. Run fsp proxy daemon
 
 Running:
-Usage: java fspproxy [portnumber] [mime type table]
+Usage: java -jar fsproxy-X.Y.jar [portnumber] [mime type table]
 
 FSP proxy can load mime.types style file for mapping file extensions
 to mime types. You can get this file from apache httpd distribution.
@@ -47,20 +47,21 @@ Sat Oct 30 12:29:23 CEST 2004 FSP Proxy 0.6 ready on 9090/*
 Operation:
 
 FSP Proxy runs on port by default 9090 and accepts fsp://*, http://*, ftp://*
-and gopher://* URLs on input side. There requests are transformed info FSP v2
+and gopher://* URLs on input side. These requests are transformed info FSP v2
 requests and sent to the target FSP server.  Most browser do not recognize
 fsp:// urls, so you have to type gopher: instead of fsp:
 
-Simply type in browser ` gopher://your.favourite.fsp.site/ ` and begin...
+Simply type in your browser URL bar 'gopher://your.favourite.fsp.site/' without
+quotes and begin to browse content of particular FSP site.
 In most cases you must use port number as part of URL:
    gopher://your.favourite.fsp.site:2000/
 
-Directory listings are pretty fast, isn't it?
+Directory listing is pretty fast, isn't it?
 
-		 **********************************************
-		     This is a free software.  Be creative.
-		    Let me know of any bugs and suggestions.
-			   *************************
+     **********************************************
+         This is a free software.  Be creative.
+        Let me know of any bugs and suggestions.
+         *************************
 
 Radim Kolar
 hsn@users.sourceforge.net
