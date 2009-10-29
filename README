@@ -39,10 +39,10 @@ Usage: java -jar fsproxy-X.Y.jar [portnumber] [mime type table]
 FSP proxy can load mime.types style file for mapping file extensions
 to mime types. You can get this file from apache httpd distribution.
 
-Example: java fspproxy 9090 /usr/local/etc/mime.types
+Example: java -jar fsproxy-0.8.jar 9090 /usr/local/etc/mime.types
 
-~/sf/fsproxy% java fspproxy
-Sat Oct 30 12:29:23 CEST 2004 FSP Proxy 0.6 ready on 9090/*
+~/sf/fsproxy% java -jar fsproxy-0.8.jar
+Sat Oct 30 12:29:23 CEST 2009 FSP Proxy 0.8 ready on 9090/*
 
 Operation:
 

@@ -2,6 +2,7 @@
     Maven 2.2 build system added
     GNU makefile and SCons build systems removed
     TODO file removed, issues moved to mantis bug tracker
+    Distributed jar file is autostartable
 0.7
 	Nice directory listings with file size and last modification time!
         Added tagline to generated error messages
