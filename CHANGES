@@ -1,3 +1,4 @@
+    Source files moved to src/ subdirectory
 0.7
 	Nice directory listings with file size and last modification time!
         Added tagline to generated error messages
