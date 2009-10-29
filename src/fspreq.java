@@ -6,7 +6,7 @@ that this notice is always included, and that you hold the author
 harmless for any loss or damage resulting from the installation or
 use of this software.
 
-		     This is a free software.  Be creative. 
+		     This is a free software.  Be creative.
 		    Let me know of any bugs and suggestions.
 */
 import java.net.*;
@@ -33,7 +33,7 @@ public class fspreq implements Runnable
     private static DateFormat formatter= new SimpleDateFormat("dd-MMM-yyyy hh:mm", Locale.US);
     public final static int NAMELEN=30;
     public final static int DATELEN=20;
-   
+
     fspreq(Socket ns)
     {
 	s=ns;
@@ -43,8 +43,8 @@ public class fspreq implements Runnable
     {
 	http10=true;
 
-	try 
-	{ 
+	try
+	{
 	    in=new DataInputStream (new BufferedInputStream(s.getInputStream()));
 	    ou=new DataOutputStream(new BufferedOutputStream(s.getOutputStream(),4096));
 
@@ -53,8 +53,8 @@ public class fspreq implements Runnable
 	s.setSoTimeout(fspproxy.client_timeout);
 
 	String req=in.readLine();
-	if(req==null) 
-	{ 
+	if(req==null)
+	{
 	    s.close();ou.close();s=null;ou=null;
 	    return;
 	}
@@ -83,7 +83,7 @@ public class fspreq implements Runnable
 	      s1=line.substring(0,j).toLowerCase();
 	      s2=line.substring(j+1);
 
-              if(s1.equals("if-modified-since")) 
+              if(s1.equals("if-modified-since"))
 	      {
                 /* cut of file size */
                	j=s2.indexOf(';',0);
@@ -116,13 +116,13 @@ public class fspreq implements Runnable
 			  }
 
 		      //System.out.println("parse start "+s2);
-		      if(s2.charAt(0)=='-') 
+		      if(s2.charAt(0)=='-')
 	              {
 			  rangestart = -1;
 			  state = 1;
 		      }
 		      else
-			  state = 0;	  
+			  state = 0;
 		      StringTokenizer st=new StringTokenizer(s2," \t\r\n-/");
 		      while(st.hasMoreTokens())
 		      {
@@ -137,7 +137,7 @@ public class fspreq implements Runnable
 			       case 1:
 			           if ( rangestart == -1 )
 				       rangelength = l;
-				   else    
+				   else
 			               rangelength=l-rangestart+1;
 			           break;
 			       case 2:
@@ -154,18 +154,18 @@ public class fspreq implements Runnable
 		    rangestart=0;
 		    rangelength=-1;
 		    rangefilesize=-1;
-	     	    // fspproxy.send_error(http10?10:9,416,"Unable to parse Range header in request.",ou);
+	     	fspproxy.send_error(http10?10:9,416,"Unable to parse Range header in request.",ou);
 		  }
 	      }
 
           }
 	String req2=null;
 
-	if(!req.startsWith("GET ")) 
+	if(!req.startsWith("GET "))
 	{
 	     fspproxy.send_error(http10?10:9,501,"This FSP proxy server supports only GET access method.",ou);
 	}
-	/* access check 
+	/* access check
 	if(!mgr.checkInetAdr(s.getInetAddress().getAddress())) {
 	      httpreq.server_error(http10?10:9,403,"Cache access denied.",ou);
 	   }
@@ -180,7 +180,7 @@ public class fspreq implements Runnable
 	    req2=req.substring(space+1);
 	else
 	    req2=req.substring(space+1,req_method);
-	
+
         req2=req2.trim();
 	if(req2.length()==0)
 	    fspproxy.send_error(http10?10:9,400,"Can not find URI in request",ou);
@@ -189,11 +189,11 @@ public class fspreq implements Runnable
 	{
 	    fspproxy.send_error(http10?10:9,400,"Only proxy requests are supported.",ou);
 	}
-	
+
 	/* parse request */
 	String parsed[]=fspproxy.parseURL(req2,null);
-	if(parsed[4]==null || 
-		(!parsed[4].equalsIgnoreCase("fsp") && 
+	if(parsed[4]==null ||
+		(!parsed[4].equalsIgnoreCase("fsp") &&
 		 !parsed[4].equalsIgnoreCase("gopher") &&
 		 !parsed[4].equalsIgnoreCase("ftp") &&
 		 !parsed[4].equalsIgnoreCase("http")
@@ -202,7 +202,7 @@ public class fspreq implements Runnable
 	{
 	    fspproxy.send_error(http10?10:9,501,"This proxy speaks only FSP v2 protocol. A fsp://, gopher://, ftp://, http:// URLs are accepted on input.",ou);
 	}
-	
+
 	/* create FSP session to host */
 	FSPsession ses;
 	FSPstat stat;
@@ -231,7 +231,7 @@ public class fspreq implements Runnable
 	    stat.type=FSPstat.RDTYPE_DIR;
 	}
 	else
-	{        
+	{
 	    /* stat the URL */
 	    try
 	    {
@@ -276,7 +276,7 @@ public class fspreq implements Runnable
 	    {
 	       fspproxy.send_error(http10?10:9,502,"Can't get directory listing of "+stat.name,ou);
 	    }
-	    
+
 	    ou.writeBytes("HTTP/1.1 200 Listing\r\nServer: "+fsploop.NAME+" "+fsploop.VERSION+"\r\nContent-Type: text/html\r\nConnection: Close\r\nAccept-Ranges: bytes\r\n\r\n");
 	    /* write title */
 	    ou.writeBytes("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n<HTML>\n<HEAD>\n<TITLE>Index of ");
@@ -298,8 +298,8 @@ public class fspreq implements Runnable
 		    else
 			list[i].name=stat.name.substring(0,stat.name.lastIndexOf('/',stat.name.length()-2));
 		    ou.writeBytes("[DIR] <a href=\""+list[i].name+"/\">Parent directory</a>\n");
-		    continue;	
-		    /*	
+		    continue;
+		    /*
 		    ou.writeBytes("[parent]");
 		    */
 		}
@@ -310,7 +310,7 @@ public class fspreq implements Runnable
 		} else
 		    ou.writeBytes("[TXT] ");
 		int nlen;
-		nlen=list[i].name.length();    
+		nlen=list[i].name.length();
 		ou.writeBytes("<a href=\""+list[i].name+"\">"+list[i].name.substring(0,Math.min(NAMELEN,nlen))+"</a> ");
 		for(int q=NAMELEN-nlen;q>0;q--)
 		    ou.write(' ');
@@ -347,7 +347,7 @@ public class fspreq implements Runnable
 	    ou.close();
 	    return;
 	}
-	    	
+
 	ou.writeBytes("HTTP/1.1 200 Transfering\r\nConnection: Close\r\nServer: "+fsploop.NAME+" "+fsploop.VERSION+"\r\nAccept-Ranges: bytes\r\nContent-Type: "+fspproxy.guessContentType(stat.name)+"\r\nContent-length: "+stat.length+"\r\nLast-Modified: "+new Date(stat.lastmod).toGMTString()+"\r\n\r\n");
 	FSPutil.download(ses,stat.name,ou,0,-1);
 	ou.close();

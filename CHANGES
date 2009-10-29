@@ -4,6 +4,7 @@
     GNU makefile and SCons build systems removed
     TODO file removed, issues moved to mantis bug tracker
     Distributed jar file is autostartable
+    return error to client if Range: header parsing failed
 0.7
 	Nice directory listings with file size and last modification time!
         Added tagline to generated error messages
