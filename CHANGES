@@ -5,6 +5,7 @@
     TODO file removed, issues moved to mantis bug tracker
     Distributed jar file is autostartable
     return error to client if Range: header parsing failed
+    detect on startup if jfsplib 1.0rc7 or greater is installed
 0.7
 	Nice directory listings with file size and last modification time!
         Added tagline to generated error messages

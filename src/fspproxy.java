@@ -6,12 +6,14 @@ that this notice is always included, and that you hold the author
 harmless for any loss or damage resulting from the installation or
 use of this software.
 
-		     This is a free software.  Be creative. 
+		     This is a free software.  Be creative.
 		    Let me know of any bugs and suggestions.
 */
 import java.io.*;
 import java.util.StringTokenizer;
 import java.util.Date;
+
+import net.fsp.FSPprotection;
 
 /* stand-alone version of fsp -> http proxy server */
 public class fspproxy
@@ -20,22 +22,32 @@ public class fspproxy
     public static int client_timeout;
     public static boolean trace_url;
     public static String defaultype="application/octet-stream";
-   
+
     public static void print_usage()
     {
 	System.out.println("java fspproxy [port number] [mime types file]");
 	System.exit(1);
     }
-    	
+
     public static void main(String argv[])
     {
+    /* check if jfsplib is installed */
+    try
+    {
+    	Class.forName("net.fsp.FSPprotection");
+    }
+    catch (ClassNotFoundException z)
+    {
+    	System.out.println("jfsplib not found in classpath or its old version. You need at least 1.0rc7 version of jfsplib.");
+    	System.exit(2);
+    }
 	client_timeout=500000;
 	trace_url=true;
 	int port=9090;
 	if(argv.length>0)
-	{   
+	{
 	    try
-	    { 
+	    {
 	       port=Integer.valueOf(argv[0]).intValue();
 	    }
 	    catch (Exception z)
@@ -47,7 +59,7 @@ public class fspproxy
                 System.out.println(new Date()+" Using user defined MIME types table from "+argv[1]);
                 loadMimeTypes(argv[1]);
 	    }
-	}    
+	}
 	new fsploop(port,null).run();
     }
 
@@ -98,7 +110,7 @@ public class fspproxy
       seven=proto.length()+3; /* '://' */
 
       }
-      else 
+      else
       {
 	  seven=url.indexOf("://");
 	  res[4]=url.substring(0,seven);
@@ -201,7 +213,7 @@ public class fspproxy
 	    if(mimetype.startsWith("#")) continue;
 	    while(true)
 	    {
-		
+
 	    	if(!st.hasMoreTokens()) break;
 	    	ext=st.nextToken();
 		updateGuessTable(mimetype,ext);
@@ -255,7 +267,7 @@ public class fspproxy
              ".java","text/plain",
              ".class","application/java-vm",
              ".jar","application/java-archive",
-	
+
 	     // images
              ".gif","image/gif",
 	     ".ief","image/ief",
@@ -275,7 +287,7 @@ public class fspproxy
 	     ".xbm","image/x-xbitmap",
 	     ".xpm","image/x-xpixmap",
 	     ".xwd","image/x-xwindowdump",
-	
+
 	     // plain text
              ".txt","text/plain",
              ".text","text/plain",
@@ -304,7 +316,7 @@ public class fspproxy
 	     ".php4",  "text/html",
 	     ".php3p", "text/html",
 	     ".php4p", "text/html",
-	
+
 	     ".texi","application/x-texinfo",
 	     ".texinfo","application/x-texinfo",
 
@@ -312,7 +324,7 @@ public class fspproxy
 	     ".vrm","x-world/x-vrml",
 	     ".vrml","x-world/x-vrml",
 	     ".wrl" ,"x-world/x-vrml",
-	
+
 	     // formated text
 	     ".rtx","text/richtext",
              ".pdf","application/pdf",
@@ -354,7 +366,7 @@ public class fspproxy
 	     ".sit","application/x-stuffit",
 	     ".sv4cpio","application/x-sv4cpio",
 	     ".sv4crc","application/x-sv4crc",
-	
+
 	     //audio
 	     ".au","audio/basic",
 	     ".snd","audio/basic",
@@ -425,7 +437,7 @@ public class fspproxy
 	     ".cdf","application/x-netcdf",
 	     ".pac","application/x-ns-proxy-autoconfig",
 	     ".swf","application/x-shockwave-flash",
-	     ".swfl","application/x-shockwave-flash",	
+	     ".swfl","application/x-shockwave-flash",
 	     ".ustar","application/x-ustar",
 	     ".src","application/x-wais-source",
 	     ".torrent","application/x-bittorrent",
@@ -439,7 +451,7 @@ public class fspproxy
 	     ".xls","application/excel",
 	     ".dot","application/msword",
              ".ppt","application/powerpoint",
-	
+
 	     //binary files
 	     ".bin","application/octet-stream",
 
