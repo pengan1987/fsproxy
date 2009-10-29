@@ -38,7 +38,7 @@ public class fspproxy
     }
     catch (ClassNotFoundException z)
     {
-    	System.out.println("jfsplib not found in classpath or its old version. You need at least 1.0rc7 version of jfsplib.");
+    	System.out.println("jfsplib was not found in your classpath or it is too old version.\nMinimum required version for FSP Proxy is jfsplib 1.0rc7.\nSee http://fsp.sourceforge.net/jfsplib.html for more info.");
     	System.exit(2);
     }
 	client_timeout=500000;
