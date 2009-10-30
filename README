@@ -34,16 +34,25 @@ fsproxy.
 
 3. Run fsp proxy daemon
 
+distributed fsproxy.jar is autostartable, but there seems to be problem
+that java launcher (tested on 1.6.0_16) is unable to merge classpath with
+autostartable jar content.
+
 Running:
-Usage: java -jar fsproxy-X.Y.jar [portnumber] [mime type table]
+Usage: java -cp fsproxy-0.X.jar;jfsplib-1.0rc8.jar fspproxy [portnumber] [mime type table]
+
+Note: Unix systems are using : instead of ; as classpath separator
 
 FSP proxy can load mime.types style file for mapping file extensions
 to mime types. You can get this file from apache httpd distribution.
 
-Example: java -jar fsproxy-0.8.jar 9090 /usr/local/etc/mime.types
+Examples:
+Unix
+   java -cp jfsplib-1.0rc8.jar:fsproxy-0.8.jar 9090 /usr/local/etc/mime.types
 
-~/sf/fsproxy% java -jar fsproxy-0.8.jar
-Sat Oct 30 12:29:23 CEST 2009 FSP Proxy 0.8 ready on 9090/*
+Windows
+   C:\target>java -cp jfsplib-1.0rc8.jar;fsproxy-0.8.jar fspproxy
+   Fri Oct 30 13:48:08 CET 2009 FSP Proxy 0.8 ready on 9090/*
 
 Operation:
 
@@ -62,7 +71,7 @@ Directory listing is pretty fast, isn't it?
      **********************************************
          This is a free software.  Be creative.
         Let me know of any bugs and suggestions.
-         *************************
+               *************************
 
 Radim Kolar
 hsn@users.sourceforge.net
