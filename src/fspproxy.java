@@ -13,8 +13,6 @@ import java.io.*;
 import java.util.StringTokenizer;
 import java.util.Date;
 
-import net.fsp.FSPprotection;
-
 /* stand-alone version of fsp -> http proxy server */
 public class fspproxy
 {
