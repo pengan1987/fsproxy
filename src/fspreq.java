@@ -16,9 +16,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import net.fsp.FSPsession;
-import net.fsp.FSPstat;
-import net.fsp.FSPutil;
+import net.sf.fsp.fsplib.FSPsession;
+import net.sf.fsp.fsplib.FSPstat;
+import net.sf.fsp.fsplib.FSPutil;
 
 public class fspreq implements Runnable
 {
