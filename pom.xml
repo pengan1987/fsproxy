@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
  <modelVersion>4.0.0</modelVersion>
 
-  <groupId>net.fsp</groupId>
+  <groupId>net.sf.fsp</groupId>
   <artifactId>fsproxy</artifactId>
   <name>FSP Proxy server</name>
-  <version>0.8</version>
+  <version>0.9-SNAPSHOT</version>
   <url>http://fsp.sourceforge.net/fsproxy.html</url>
   <packaging>jar</packaging>
-  <description>Translates FSP v2 protocol into HTTP/1.1.
-  </description>
+  <description>Translates FSP v2 protocol into HTTP/1.1.</description>
+  <inceptionYear>2003</inceptionYear>
   <licenses>
      <license>
          <name>MIT License</name>
+         <url>https://opensource.org/licenses/MIT</url>
      </license>
   </licenses>
   <issueManagement>
-  	<system>Mantis</system>
-  	<url>http://sourceforge.net/apps/mantisbt/fsp/</url>
+  	<system>Source Forge</system>
+  	<url>https://sourceforge.net/p/fsp/tickets/</url>
   </issueManagement>
   <developers>
     <developer>
+       <id>hsn</id>
        <name>Radim Kolar</name>
+       <email>hsn@sendmail.cz</email>
     </developer>
   </developers>
   <scm>
-  	<connection>scm:bazaar:bzr://fsp.bzr.sourceforge.net/bzrroot/fsp/fsproxy/</connection>
-  	<developerConnection>scm:bazaar:bzr+ssh://fsp.bzr.sourceforge.net/bzrroot/fsp/fsproxy/</developerConnection>
-  	<url>http://fsp.bzr.sourceforge.net/bzr/fsp/fsproxy/files</url>
+  	<connection>scm:git:git://git.code.sf.net/p/fsp/fsproxy</connection>
+  	<developerConnection>scm:git:ssh://git.code.sf.net/p/fsp/fsproxy</developerConnection>
+  	<url>https://sourceforge.net/p/fsp/fsproxy/ci/master/tree/</url>
   </scm>
   <organization>
      <name>FSP Project</name>
@@ -44,6 +47,7 @@
        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
+          <version>3.2.0</version>
           <configuration>
              <archive>
                 <manifest>
@@ -55,14 +59,16 @@
        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-	      <configuration>
-	        <source>1.2</source>
-	        <target>1.2</target>
-	      </configuration>
+          <version>3.8.1</version>
+         <configuration>
+           <source>1.2</source>
+           <target>1.2</target>
+         </configuration>
        </plugin>
        <plugin>
       	  <groupId>org.apache.maven.plugins</groupId>
       	  <artifactId>maven-assembly-plugin</artifactId>
+           <version>3.3.0</version>
       	  <configuration>
       	     <descriptors>
       	   	   <descriptor>zip.xml</descriptor>
@@ -81,7 +87,7 @@
       <plugin>
       	<groupId>org.apache.maven.plugins</groupId>
       	<artifactId>maven-source-plugin</artifactId>
-      	<version>2.1.1</version>
+      	<version>3.2.0</version>
       	<executions>
           <execution>
             <id>attach-sources</id>
@@ -93,39 +99,12 @@
         </executions>
       </plugin>
     </plugins>
-    <extensions>
-      <extension>
-          <groupId>org.apache.maven.wagon</groupId>
-          <artifactId>wagon-ssh-external</artifactId>
-          <version>1.0-beta-6</version>
-      </extension>
-    </extensions>
   </build>
-  <repositories>
-  	<repository>
-  		<id>fsp-sfnet</id>
-  		<name>FSP releases Maven 2 repo</name>
-  		<url>http://fsp.sourceforge.net/m2</url>
-  		<releases>
-  			<checksumPolicy>fail</checksumPolicy>
-  		</releases>
-  		<snapshots>
-  			<enabled>false</enabled>
-  		</snapshots>
-  	</repository>
-  </repositories>
   <dependencies>
   	<dependency>
-  		<groupId>net.fsp</groupId>
-  		<artifactId>jfsplib</artifactId>
-  		<version>1.0rc8</version>
+  		<groupId>net.sf.fsp</groupId>
+  		<artifactId>fsplib</artifactId>
+  		<version>1.0.0-RC11</version>
   	</dependency>
   </dependencies>
-  <distributionManagement>
-    <repository>
-      <id>fsp-releases</id>
-      <name>FSP releases Maven 2 repo</name>
-      <url>scpexe://shell.sourceforge.net/home/groups/f/fs/fsp/htdocs/m2</url>
-    </repository>
-  </distributionManagement>
 </project>
