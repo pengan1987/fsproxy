@@ -2,6 +2,9 @@
     Use jfsplib from Maven central
     pom.xml plugins updated
     Prepare pom.xml for deployement to Maven Central
+    Build fat jar for .zip file distribution
+    Rename README to README.txt
+    add CHANGES to .zip distribution
 0.8
     Source files moved to src/ subdirectory
     Maven 2.2 build system added
