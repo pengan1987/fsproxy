@@ -32,7 +32,7 @@ public class fspproxy
     /* check if jfsplib is installed */
     try
     {
-    	Class.forName("net.fsp.FSPprotection");
+    	Class.forName("net.sf.fsp.fsplib.FSPprotection");
     }
     catch (ClassNotFoundException z)
     {
