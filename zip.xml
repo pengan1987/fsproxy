@@ -28,8 +28,9 @@
    </fileSets>
    <files>
      <file>
-       <source>${project.build.directory}/${project.artifactId}-${project.version}.jar</source>
+       <source>${project.build.directory}/${project.artifactId}-${project.version}-all.jar</source>
        <outputDirectory>/</outputDirectory>
+       <destName>${project.artifactId}.jar</destName>
      </file>
    </files>
 </assembly>
