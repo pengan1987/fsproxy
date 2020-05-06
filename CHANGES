@@ -1,3 +1,7 @@
+0.9
+    Use jfsplib from Maven central
+    pom.xml plugins updated
+    Prepare pom.xml for deployement to Maven Central
 0.8
     Source files moved to src/ subdirectory
     Maven 2.2 build system added
@@ -7,35 +11,33 @@
     return error to client if Range: header parsing failed
     detect on startup if jfsplib 1.0rc7 or greater is installed
 0.7
-	Nice directory listings with file size and last modification time!
+   Nice directory listings with file size and last modification time!
         Added tagline to generated error messages
-	FSP timeout increased from 30 to 500 sec.
-	bittorent mime type added
-	ftp:// url is accepted as alias
-	send 502 not 401 on failed directory listing because we
-	  do not supports FSP passwords.
-
+   FSP timeout increased from 30 to 500 sec.
+   bittorent mime type added
+   ftp:// url is accepted as alias
+   send 502 not 401 on failed directory listing because we
+     do not supports FSP passwords.
 0.6
-        Added link to FSP homepage into directory listings tagline
-	Directory listings are now very fast. There are just
-	  1 RTT far away!
-	Added help wanted note to every directory listings.
-	You need to get 1.0rc5 Java FSP support library
-	Added HTTP/1.1 protocol support!
-	HTTP/1.1 Range requests are supported!
-	Download managers in browsers now works very nicely with
-	  all that resuming stuff.
-	Added note about help wanted with adding FSP to lftp,mozilla,wget..
-
+   Added link to FSP homepage into directory listings tagline
+   Directory listings are now very fast. There are just
+     1 RTT far away!
+   Added help wanted note to every directory listings.
+   You need to get 1.0rc5 Java FSP support library
+   Added HTTP/1.1 protocol support!
+   HTTP/1.1 Range requests are supported!
+   Download managers in browsers now works very nicely with
+     all that resuming stuff.
+   Added note about help wanted with adding FSP to lftp,mozilla,wget..
 0.5
-	updated copyrights
-	print usage on error
-	more resistent to errors in build environment
-	can load mime types from user-defined file
+   updated copyrights
+   print usage on error
+   more resistent to errors in build environment
+   can load mime types from user-defined file
 0.4
-	directory should ends with / - send redirect if needed
-	parent directory link in dirlisting fixed
-	support for guessing Content-types from filenames
-	support for Last-Modified date
+   directory should ends with / - send redirect if needed
+   parent directory link in dirlisting fixed
+   support for guessing Content-types from filenames
+   support for Last-Modified date
 0.3
-	first public release - 'technology demo'
+   first public release - 'technology demo'
