@@ -19,8 +19,8 @@
        <outputDirectory>/</outputDirectory>
        <lineEnding>dos</lineEnding>
        <includes>
-          <include>NEWS</include>
-          <include>README</include>
+          <include>CHANGES</include>
+          <include>README.txt</include>
           <include>pom.xml</include>
           <include>zip.xml</include>
        </includes>
