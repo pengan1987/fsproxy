@@ -5,6 +5,7 @@
     Build fat jar for .zip file distribution
     Rename README to README.txt
     add CHANGES to .zip distribution
+    Updated documentation in README
 0.8
     Source files moved to src/ subdirectory
     Maven 2.2 build system added
