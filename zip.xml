@@ -5,31 +5,31 @@
     <formats>
       <format>zip</format>
     </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-    	<directory>src</directory>
-    	<lineEnding>dos</lineEnding>
-    	<includes>
-    		<include>*.java</include>
-    	</includes>
+       <directory>src</directory>
+       <lineEnding>dos</lineEnding>
+       <includes>
+          <include>*.java</include>
+       </includes>
     </fileSet>
     <fileSet>
-     	 <directory>.</directory>
-     	 <outputDirectory>/</outputDirectory>
-     	 <lineEnding>dos</lineEnding>
-     	 <includes>
-     	     <include>NEWS</include>
-     	     <include>README</include>
-     	     <include>pom.xml</include>
-     	     <include>zip.xml</include>
-     	 </includes>
+       <directory>.</directory>
+       <outputDirectory>/</outputDirectory>
+       <lineEnding>dos</lineEnding>
+       <includes>
+          <include>NEWS</include>
+          <include>README</include>
+          <include>pom.xml</include>
+          <include>zip.xml</include>
+       </includes>
     </fileSet>
-    </fileSets>
-    <files>
-    <file>
+   </fileSets>
+   <files>
+     <file>
        <source>${project.build.directory}/${project.artifactId}-${project.version}.jar</source>
        <outputDirectory>/</outputDirectory>
-    </file>
-  </files>
-
+     </file>
+   </files>
 </assembly>
