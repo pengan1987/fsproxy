@@ -23,13 +23,15 @@ public class fsploop implements Runnable
     /* port for running proxy server */
     public int serverport;
     public InetAddress serveradr;
+    public String defaultHost;
 
     private ServerSocket server;
 
-    fsploop(int port, InetAddress adr)
+    fsploop(int port, InetAddress adr, String host) 
     {
 	serverport=port;
 	serveradr=adr;
+	defaultHost = host;
 
 	if(serverport==0) return;
 	/* create server socket */
@@ -85,7 +87,7 @@ public class fsploop implements Runnable
 		  }
 		  catch(IOException e) {}
 		  finally { continue;}
-		client=new fspreq(clientSocket);
+		client=new fspreq(clientSocket, defaultHost);
 		new Thread(clients,client).start();
        }  /* listen */
     }

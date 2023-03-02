@@ -23,7 +23,7 @@ public class fspproxy
 
     public static void print_usage()
     {
-	System.out.println("java fspproxy [port number] [mime types file]");
+    System.out.println("java fspproxy -p [port number] -m [mime types file] -r [default remote host:port]");
 	System.exit(1);
     }
 
@@ -42,23 +42,35 @@ public class fspproxy
 	client_timeout=500000;
 	trace_url=true;
 	int port=9090;
+    String default_host = "";
 	if(argv.length>0)
 	{
-	    try
-	    {
-	       port=Integer.valueOf(argv[0]).intValue();
-	    }
-	    catch (Exception z)
-	    {
-		print_usage();
-            }
-	    if(argv.length>1)
-	    {
-                System.out.println(new Date()+" Using user defined MIME types table from "+argv[1]);
-                loadMimeTypes(argv[1]);
-	    }
+		try
+		{
+			for (int i = 0; i < argv.length; i++)
+			{
+				String arg = argv[i];
+				if ("-m".equals(arg))
+				{
+					System.out.println(new Date() + " Using user defined MIME types table from " + argv[i + 1]);
+					loadMimeTypes(argv[i + 1]);
+				}
+				if ("-p".equals(arg))
+				{
+					port = Integer.parseInt(argv[i + 1]);
+				}
+				if ("-r".equals(arg))
+				{
+					System.out.println(new Date() + " Using user defined remote host " + argv[i + 1]);
+					default_host = argv[i + 1];
+				}
+			}
+		} catch (Exception z)
+		{
+			print_usage();
+		}
 	}
-	new fsploop(port,null).run();
+	new fsploop(port, null, default_host).run();
     }
 
     /** generates error message and closes the connection */

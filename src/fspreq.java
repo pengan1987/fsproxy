@@ -33,9 +33,11 @@ public class fspreq implements Runnable
     private static DateFormat formatter= new SimpleDateFormat("dd-MMM-yyyy hh:mm", Locale.US);
     public final static int NAMELEN=30;
     public final static int DATELEN=20;
+    private String defaultHost;
 
-    fspreq(Socket ns)
+    fspreq(Socket ns, String host) 
     {
+    defaultHost = host;
 	s=ns;
     }
 
@@ -187,7 +189,13 @@ public class fspreq implements Runnable
 
 	if(req2.charAt(0)=='/')
 	{
-	    fspproxy.send_error(http10?10:9,400,"Only proxy requests are supported.",ou);
+        if (defaultHost.length() > 0)
+        {
+            req2= "fsp://" + defaultHost + req2;
+        } else
+        {
+            fspproxy.send_error(http10 ? 10 : 9, 400, "Only proxy requests are supported.", ou);
+        }
 	}
 
 	/* parse request */
@@ -282,7 +290,7 @@ public class fspreq implements Runnable
 	    /* write title */
 	    ou.writeBytes("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n<HTML>\n<HEAD>\n<TITLE>Index of ");
 	    ou.writeBytes(stat.name);
-	    ou.writeBytes("</TITLE>\n</HEAD>\n<BODY>\n<H1>Index of ");
+	    ou.writeBytes("</TITLE>\n<meta charset=\"utf-8\"></HEAD>\n<BODY>\n<H1>Index of ");
 	    ou.writeBytes(stat.name);
 	    ou.writeBytes("</H1>\n<PRE>      ");
             ou.writeBytes(text_align("Name",NAMELEN));
@@ -312,7 +320,8 @@ public class fspreq implements Runnable
 		    ou.writeBytes("[TXT] ");
 		int nlen;
 		nlen=list[i].name.length();
-		ou.writeBytes("<a href=\""+list[i].name+"\">"+list[i].name.substring(0,Math.min(NAMELEN,nlen))+"</a> ");
+        String fileLink = "<a href=\""+list[i].name+"\">"+list[i].name.substring(0,Math.min(NAMELEN,nlen))+"</a> ";
+        ou.write(fileLink.getBytes());
 		for(int q=NAMELEN-nlen;q>0;q--)
 		    ou.write(' ');
 
